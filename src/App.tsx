@@ -213,18 +213,18 @@ function App() {
   return (
     <div className="min-h-screen bg-white dark:bg-white px-0 py-2 sm:p-8 text-black dark:text-black">
       <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-4 sm:mb-6">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-1">Connections</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Create four groups of four!</p>
+        <div className="text-center mb-2 sm:mb-6">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-0.5 sm:mb-1">Connections</h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500 mt-0.5 sm:mt-1">Create four groups of four!</p>
         </div>
 
         {gameState === "playing" && (
-          <div className="mb-4 flex justify-between items-center text-black dark:text-black">
-            <div className="text-sm font-medium">
+          <div className="mb-2 sm:mb-4 flex justify-between items-center text-black dark:text-black text-xs sm:text-sm">
+            <div className="mb-2 sm:mb-4 text-sm font-medium">
               Mistakes remaining: {Math.max(0, 5 - mistakes)}
             </div>
             {message && (
-              <div className="text-sm font-bold animate-pulse">{message}</div>
+              <div className="text-xs sm:text-sm font-bold animate-pulse">{message}</div>
             )}
           </div>
         )}
