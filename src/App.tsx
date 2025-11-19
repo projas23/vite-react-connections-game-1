@@ -30,7 +30,7 @@ function App() {
   };
 
   const allWords = Object.values(categories).flatMap(cat => cat.words);
-  
+
   const [words, setWords] = useState(shuffleArray([...allWords]));
   const [selected, setSelected] = useState<string[]>([]);
   const [solved, setSolved] = useState<any[]>([]);
@@ -50,81 +50,83 @@ function App() {
 
   useEffect(() => {
     checkGameState();
-    
+
     // Secret reset key combo: Shift + R + E + S + E + T
     const keysPressed = new Set<string>();
-    
+
     const handleKeyDown = (e: KeyboardEvent) => {
       keysPressed.add(e.key.toLowerCase());
-      
-      if (e.shiftKey && 
-          keysPressed.has('r') && 
-          keysPressed.has('e') && 
-          keysPressed.has('s') && 
-          keysPressed.has('t')) {
+
+      if (
+        e.shiftKey &&
+        keysPressed.has("r") &&
+        keysPressed.has("e") &&
+        keysPressed.has("s") &&
+        keysPressed.has("t")
+      ) {
         resetGameCompletely();
       }
     };
-    
+
     const handleKeyUp = (e: KeyboardEvent) => {
       keysPressed.delete(e.key.toLowerCase());
     };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-    
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
   const checkGameState = () => {
     try {
-      const savedState = localStorage.getItem('connections-game-state');
+      const savedState = localStorage.getItem("connections-game-state");
       if (savedState) {
         const state = JSON.parse(savedState);
         setGameState(state.status);
-        if (state.status === 'won') {
+        if (state.status === "won") {
           setSolved(Object.values(categories));
           setMessage("🎉 Congrats, you solved it! I love you... what? who typed that? 🎉");
         }
       } else {
-        setGameState('playing');
+        setGameState("playing");
       }
     } catch (error) {
-      setGameState('playing');
+      setGameState("playing");
     }
     setIsLoading(false);
   };
 
   const saveGameState = (status: string) => {
     try {
-      localStorage.setItem('connections-game-state', JSON.stringify({ status }));
+      localStorage.setItem("connections-game-state", JSON.stringify({ status }));
     } catch (error) {
-      console.error('Failed to save game state:', error);
+      console.error("Failed to save game state:", error);
     }
   };
 
   const resetGameCompletely = () => {
     try {
-      localStorage.removeItem('connections-game-state');
+      localStorage.removeItem("connections-game-state");
       setWords(shuffleArray([...allWords]));
       setSelected([]);
       setSolved([]);
       setMistakes(0);
       setMessage("");
-      setGameState('playing');
-      console.log('Game reset!');
+      setGameState("playing");
+      console.log("Game reset!");
     } catch (error) {
-      console.error('Failed to reset game:', error);
+      console.error("Failed to reset game:", error);
     }
   };
 
   const handleWordClick = (word: string) => {
-    if (gameState !== 'playing') return;
+    if (gameState !== "playing") return;
     if (solved.some(cat => cat.words.includes(word))) return;
-    
+
     if (selected.includes(word)) {
       setSelected(selected.filter(w => w !== word));
     } else if (selected.length < 4) {
@@ -133,59 +135,58 @@ function App() {
   };
 
   const handleShuffle = () => {
-    if (gameState !== 'playing') return;
+    if (gameState !== "playing") return;
     const remaining = words.filter(w => !solved.some(cat => cat.words.includes(w)));
     const solvedWords = words.filter(w => solved.some(cat => cat.words.includes(w)));
     setWords([...solvedWords, ...shuffleArray(remaining)]);
   };
 
   const handleDeselectAll = () => {
-    if (gameState !== 'playing') return;
+    if (gameState !== "playing") return;
     setSelected([]);
     setMessage("");
   };
 
-const handleSubmit = () => {
-  if (gameState !== 'playing') return;
-  if (selected.length !== 4) return;
+  const handleSubmit = () => {
+    if (gameState !== "playing") return;
+    if (selected.length !== 4) return;
 
-  const foundCategory = Object.entries(categories).find(([, cat]) => {
-    return selected.every(word => cat.words.includes(word)) && 
-           selected.length === 4;
-  });
-
-  if (foundCategory) {
-    const [, category] = foundCategory;
-    const newSolved = [...solved, category];
-    setSolved(newSolved);
-    setSelected([]);
-    setMessage(`✨ ${category.name}! ✨`);
-    
-    const remainingWords = words.filter(w => !category.words.includes(w));
-    setWords([...category.words, ...remainingWords]);
-
-    if (newSolved.length === 4) {
-      setGameState('won');
-      setMessage("🎉 Congrats, you solved it! I love you... what? who typed that? 🎉");
-      saveGameState('won');
-    }
-  } else {
-    const oneAway = Object.values(categories).some(cat => {
-      const matches = selected.filter(word => cat.words.includes(word));
-      return matches.length === 3;
+    const foundCategory = Object.entries(categories).find(([, cat]) => {
+      return selected.every(word => cat.words.includes(word)) && selected.length === 4;
     });
 
-    const newMistakes = mistakes + 1;
-    setMistakes(newMistakes);
-    
-    if (newMistakes >= 4) {
-      setGameState('lost');
-      saveGameState('lost');
+    if (foundCategory) {
+      const [, category] = foundCategory;
+      const newSolved = [...solved, category];
+      setSolved(newSolved);
+      setSelected([]);
+      setMessage(`✨ ${category.name}! ✨`);
+
+      const remainingWords = words.filter(w => !category.words.includes(w));
+      setWords([...category.words, ...remainingWords]);
+
+      if (newSolved.length === 4) {
+        setGameState("won");
+        setMessage("🎉 Congrats, you solved it! I love you... what? who typed that? 🎉");
+        saveGameState("won");
+      }
     } else {
-      setMessage(oneAway ? "One away! 🤏" : "Not quite! Try again 💜");
+      const oneAway = Object.values(categories).some(cat => {
+        const matches = selected.filter(word => cat.words.includes(word));
+        return matches.length === 3;
+      });
+
+      const newMistakes = mistakes + 1;
+      setMistakes(newMistakes);
+
+      if (newMistakes >= 4) {
+        setGameState("lost");
+        saveGameState("lost");
+      } else {
+        setMessage(oneAway ? "One away! 🤏" : "Not quite! Try again 💜");
+      }
     }
-  }
-};
+  };
 
   if (isLoading) {
     return (
@@ -195,7 +196,7 @@ const handleSubmit = () => {
     );
   }
 
-  if (gameState === 'lost') {
+  if (gameState === "lost") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 flex items-center justify-center p-8">
         <div className="max-w-md text-center">
@@ -219,52 +220,52 @@ const handleSubmit = () => {
           <p className="text-sm text-gray-500 mt-2">Create four groups of four!</p>
         </div>
 
-        {gameState === 'playing' && (
+        {gameState === "playing" && (
           <div className="mb-4 flex justify-between items-center">
             <div className="text-sm font-medium text-gray-700">
               Mistakes remaining: {4 - mistakes}
             </div>
             {message && (
-              <div className="text-sm font-bold text-purple-600 animate-pulse">
-                {message}
-              </div>
+              <div className="text-sm font-bold text-purple-600 animate-pulse">{message}</div>
             )}
           </div>
         )}
 
-        {solved.map((category, idx) => (
-          <div key={idx} className={`${category.color} text-white p-4 rounded-lg mb-2 text-center`}>
+        {solved.map((category, index) => (
+          <div
+            key={index}
+            className={`${category.color} text-white p-4 rounded-lg mb-2 text-center`}
+          >
             <div className="font-bold mb-1">{category.name}</div>
             <div className="text-sm">{category.words.join(", ")}</div>
           </div>
         ))}
 
-        {gameState === 'won' && (
+        {gameState === "won" && (
           <div className="text-center mt-8">
-            <p className="text-2xl font-bold text-purple-600 animate-pulse">
-              {message}
-            </p>
+            <p className="text-2xl font-bold text-purple-600 animate-pulse">{message}</p>
           </div>
         )}
 
-        {gameState === 'playing' && (
+        {gameState === "playing" && (
           <>
             <div className="grid grid-cols-4 gap-2 mb-6">
-              {words.map((word, idx) => {
+              {words.map((word, index) => {
                 const isSolved = solved.some(cat => cat.words.includes(word));
                 const isSelected = selected.includes(word);
-                
+
                 if (isSolved) return null;
 
                 return (
                   <button
-                    key={idx}
+                    key={index}
                     onClick={() => handleWordClick(word)}
                     className={`
                       p-4 rounded-lg font-semibold text-sm transition-all transform hover:scale-105
-                      ${isSelected 
-                        ? 'bg-purple-400 text-white shadow-lg' 
-                        : 'bg-white text-gray-800 border-2 border-gray-200 hover:border-purple-300'
+                      ${
+                        isSelected
+                          ? "bg-purple-400 text-white shadow-lg"
+                          : "bg-white text-gray-800 border-2 border-gray-200 hover:border-purple-300"
                       }
                     `}
                   >
@@ -293,8 +294,8 @@ const handleSubmit = () => {
                 disabled={selected.length !== 4}
                 className={`px-6 py-2 rounded-full font-semibold transition-colors ${
                   selected.length === 4
-                    ? 'bg-purple-600 text-white hover:bg-purple-700'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? "bg-purple-600 text-white hover:bg-purple-700"
+                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
                 Submit
