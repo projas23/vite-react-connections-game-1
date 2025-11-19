@@ -191,35 +191,35 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-black text-xl font-semibold">Loading...</div>
+      <div className="min-h-screen bg-white dark:bg-white flex items-center justify-center">
+        <div className="text-black dark:text-black text-xl font-semibold">Loading...</div>
       </div>
     );
   }
 
   if (gameState === "lost") {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8 text-black">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-100 flex items-center justify-center p-8 text-black dark:text-black">
         <div className="max-w-md text-center">
           <div className="text-6xl mb-6">😔</div>
           <h1 className="text-3xl font-bold mb-4">Thank you for playing, friend.</h1>
           <p className="text-xl mb-2">We're all done.</p>
-          <p className="text-lg text-gray-600">Better luck next time.</p>
+          <p className="text-lg text-gray-600 dark:text-gray-600">Better luck next time.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white p-4 sm:p-8 text-black">
+    <div className="min-h-screen bg-white dark:bg-white p-4 sm:p-8 text-black dark:text-black">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold mb-1">Connections</h1>
-          <p className="text-sm text-gray-500 mt-1">Create four groups of four!</p>
+          <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Create four groups of four!</p>
         </div>
 
         {gameState === "playing" && (
-          <div className="mb-4 flex justify-between items-center text-black">
+          <div className="mb-4 flex justify-between items-center text-black dark:text-black">
             <div className="text-sm font-medium">
               Mistakes remaining: {Math.max(0, 4 - mistakes)}
             </div>
@@ -241,7 +241,7 @@ function App() {
 
         {gameState === "won" && (
           <div className="text-center mt-8">
-            <p className="text-2xl font-bold text-purple-600">
+            <p className="text-2xl font-bold text-purple-600 dark:text-purple-600">
               Congrats, you solved it! ... what? who typed that?
             </p>
           </div>
@@ -249,43 +249,36 @@ function App() {
 
         {gameState === "playing" && (
           <>
-            {/* Word Grid */}
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(70px,1fr))] gap-2 mb-6">
+            <div className="grid grid-cols-4 gap-2 mb-6">
               {words.map((word, index) => {
                 const isSolved = solved.some((cat) => cat.words.includes(word));
                 const isSelected = selected.includes(word);
                 if (isSolved) return null;
 
-             const maxChars = 8;
-const fontSize = word.length > maxChars 
-  ? `${Math.max(10, 16 - (word.length - maxChars) * 0.8)}px`
-  : "14px";
-
                 return (
                   <button
                     key={index}
                     onClick={() => handleWordClick(word)}
-                    style={{ fontSize, lineHeight: 1.1 }}
                     className={`
-                      w-full aspect-square p-2 rounded-lg font-semibold text-center flex items-center justify-center
-                      border-2 transition-transform transform hover:scale-105
+                      w-full aspect-square p-1.5 rounded-lg font-semibold text-center flex items-center justify-center
+                      border-2 transition-transform transform hover:scale-105 leading-tight
+                      ${word.length > 10 ? 'text-[10px]' : word.length > 8 ? 'text-xs' : word.length > 6 ? 'text-sm' : 'text-base'}
                       ${isSelected
-                        ? "bg-black text-white border-black"
-                        : "bg-white text-black border-gray-400 hover:border-black"
+                        ? "bg-black text-white border-black dark:bg-black dark:text-white dark:border-black"
+                        : "bg-white text-black border-gray-400 hover:border-black dark:bg-white dark:text-black dark:border-gray-400 dark:hover:border-black"
                       }
                     `}
                   >
-                    {word}
+                    <span className="px-0.5 break-words w-full">{word}</span>
                   </button>
                 );
               })}
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-2 justify-center flex-wrap">
               <button
                 onClick={handleShuffle}
-                className="px-6 py-2 bg-white border-2 border-black rounded-full font-semibold hover:bg-gray-100 transition flex items-center gap-2"
+                className="px-6 py-2 bg-white dark:bg-white border-2 border-black dark:border-black rounded-full font-semibold hover:bg-gray-100 dark:hover:bg-gray-100 transition flex items-center gap-2 text-black dark:text-black"
               >
                 <Shuffle size={16} />
                 Shuffle
@@ -293,7 +286,7 @@ const fontSize = word.length > maxChars
 
               <button
                 onClick={handleDeselectAll}
-                className="px-6 py-2 bg-white border-2 border-black rounded-full font-semibold hover:bg-gray-100 transition"
+                className="px-6 py-2 bg-white dark:bg-white border-2 border-black dark:border-black rounded-full font-semibold hover:bg-gray-100 dark:hover:bg-gray-100 transition text-black dark:text-black"
               >
                 Deselect
               </button>
@@ -304,8 +297,8 @@ const fontSize = word.length > maxChars
                 className={`px-6 py-2 rounded-full font-semibold border-2 transition
                   ${
                     selected.length === 4
-                      ? "bg-black text-white border-black hover:bg-gray-900"
-                      : "bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed"
+                      ? "bg-black dark:bg-black text-white dark:text-white border-black dark:border-black hover:bg-gray-900 dark:hover:bg-gray-900"
+                      : "bg-gray-300 dark:bg-gray-300 text-gray-500 dark:text-gray-500 border-gray-400 dark:border-gray-400 cursor-not-allowed"
                   }
                 `}
               >
