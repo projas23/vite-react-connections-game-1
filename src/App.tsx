@@ -202,16 +202,16 @@ function App() {
       <div className="min-h-screen bg-gray-100 dark:bg-gray-100 flex items-center justify-center p-8 text-black dark:text-black">
         <div className="max-w-md text-center">
           <div className="text-6xl mb-6">😔</div>
-          <h1 className="text-3xl font-bold mb-4">Thank you for playing, friend.</h1>
-          <p className="text-xl mb-2">We're all done.</p>
-          <p className="text-lg text-gray-600 dark:text-gray-600 mb-6">Better luck next time.</p>
+          <h1 className="text-3xl font-bold mb-4">Is it too hard?</h1>
+          <p className="text-xl mb-2">No, you got this.</p>
+          <p className="text-lg text-gray-600 dark:text-gray-600 mb-6"></p>
           <button
             onClick={async () => {
               await resetGameCompletely();
             }}
             className="px-8 py-3 bg-black text-white rounded-full font-bold text-lg hover:bg-gray-800 transition-colors"
           >
-            Ok, we're all done. Let's try again.
+            Let's try again.
           </button>
         </div>
       </div>
