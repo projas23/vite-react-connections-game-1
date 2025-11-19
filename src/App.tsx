@@ -1,48 +1,6 @@
 import { useState, useEffect } from "react";
 import { Shuffle } from "lucide-react";
 
-function TypewriterMessage({
-  fullMessage,
-  loveText = "I love you",
-  fadeAfter = 7000,
-}: {
-  fullMessage: string;
-  loveText?: string;
-  fadeAfter?: number;
-}) {
-  const [displayed, setDisplayed] = useState("");
-  const [showLove, setShowLove] = useState(false);
-
-  useEffect(() => {
-    let index = 0;
-
-    const interval = setInterval(() => {
-      setDisplayed((prev) => prev + fullMessage[index]);
-      index++;
-      if (index >= fullMessage.length) {
-        clearInterval(interval);
-        setShowLove(true); // show "I love you" after full message typed
-      }
-    }, 40);
-
-    const timeout = setTimeout(() => {
-      setShowLove(false); // hide "I love you" after delay
-    }, fullMessage.length * 40 + fadeAfter);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, [fullMessage, fadeAfter]);
-
-  return (
-    <p className="text-2xl font-bold text-center sm:text-3xl">
-      {displayed}
-      {showLove && <span className="text-purple-600"> {loveText}</span>}
-    </p>
-  );
-}
-
 function App() {
   const categories = {
     love: {
@@ -128,7 +86,7 @@ function App() {
         if (state.status === "won") {
           setSolved(Object.values(categories));
           setMessage(
-            "Congrats, you solved it! ... what? who typed that?"
+            "Congrats, you solved it! I love you... what? who typed that?"
           );
         }
       } else {
@@ -210,7 +168,7 @@ function App() {
       if (newSolved.length === 4) {
         setGameState("won");
         setMessage(
-          "Congrats, you solved it! ... what? who typed that?"
+          "Congrats, you solved it! I love you... what? who typed that?"
         );
         saveGameState("won");
       }
@@ -284,26 +242,22 @@ function App() {
 
         {gameState === "won" && (
           <div className="text-center mt-8">
-            <TypewriterMessage
-              fullMessage="Congrats, you solved it! ... what? who typed that?"
-              fadeAfter={7000}
-            />
+            <p className="text-2xl font-bold">
+              Congrats, you solved it! I love you... what? who typed that?
+            </p>
           </div>
         )}
 
         {gameState === "playing" && (
           <>
-            <div className="grid grid-cols-4 gap-2 mb-6 sm:grid-cols-4 xs:grid-cols-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
               {words.map((word, index) => {
                 const isSolved = solved.some((cat) => cat.words.includes(word));
                 const isSelected = selected.includes(word);
                 if (isSolved) return null;
 
-                const maxChars = 10;
                 const fontSize =
-                  word.length > maxChars
-                    ? `${Math.max(12, 16 - (word.length - maxChars))}px`
-                    : "16px";
+                  word.length > 10 ? `${Math.max(12, 16 - (word.length - 10))}px` : "16px";
 
                 return (
                   <button
