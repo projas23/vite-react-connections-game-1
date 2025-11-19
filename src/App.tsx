@@ -1,15 +1,8 @@
 import { useState, useEffect } from "react";
 import { Shuffle } from "lucide-react";
 
-interface Category {
-  name: string;
-  words: string[];
-  color: string;
-  difficulty: string;
-}
-
 function App() {
-  const categories: Record<string, Category> = {
+  const categories = {
     love: {
       name: "LITERAL LOVE OF MY LIFE",
       words: ["MADISON", "LOML", "ILYSM", "ROYGBABE"],
@@ -40,7 +33,7 @@ function App() {
 
   const [words, setWords] = useState(shuffleArray([...allWords]));
   const [selected, setSelected] = useState<string[]>([]);
-  const [solved, setSolved] = useState<Category[]>([]);
+  const [solved, setSolved] = useState<any[]>([]);
   const [mistakes, setMistakes] = useState(0);
   const [message, setMessage] = useState("");
   const [gameState, setGameState] = useState("loading");
@@ -77,6 +70,7 @@ function App() {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
@@ -91,7 +85,9 @@ function App() {
         setGameState(state.status);
         if (state.status === "won") {
           setSolved(Object.values(categories));
-          setMessage("Congrats, you solved it! I love you... what? who typed that?");
+          setMessage(
+            "Congrats, you solved it! I love you... what? who typed that?"
+          );
         }
       } else {
         setGameState("playing");
@@ -133,7 +129,9 @@ function App() {
 
   const handleShuffle = () => {
     if (gameState !== "playing") return;
-    const remaining = words.filter((w) => !solved.some((cat) => cat.words.includes(w)));
+    const remaining = words.filter(
+      (w) => !solved.some((cat) => cat.words.includes(w))
+    );
     const solvedWords = words.filter((w) => solved.some((cat) => cat.words.includes(w)));
     setWords([...solvedWords, ...shuffleArray(remaining)]);
   };
@@ -164,6 +162,9 @@ function App() {
 
       if (newSolved.length === 4) {
         setGameState("won");
+        setMessage(
+          "Congrats, you solved it! I love you... what? who typed that?"
+        );
         saveGameState("won");
       }
     } else {
@@ -172,7 +173,7 @@ function App() {
         return matches.length === 3;
       });
 
-      const newMistakes = Math.min(mistakes + 1, 4); // clamp at 4
+      const newMistakes = Math.min(mistakes + 1, 4);
       setMistakes(newMistakes);
 
       if (newMistakes >= 4) {
@@ -184,67 +185,65 @@ function App() {
     }
   };
 
-  // Typewriter component for win message
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-black text-xl font-semibold">Loading...</div>
+      </div>
+    );
+  }
+
+  if (gameState === "lost") {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8 text-black">
+        <div className="max-w-md text-center">
+          <div className="text-6xl mb-6">😔</div>
+          <h1 className="text-3xl font-bold mb-4">Thank you for playing, friend.</h1>
+          <p className="text-xl mb-2">We're all done.</p>
+          <p className="text-lg text-gray-600">Better luck next time.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // --- TYPEWRITER COMPONENT ---
   const TypewriterMessage = ({
-  text,
-  loveText = "I love you",
-  hideAfter = 7000,
-}: {
-  text: string;
-  loveText?: string;
-  hideAfter?: number;
-}) => {
-  const [displayed, setDisplayed] = useState("");
-  const [fadeLove, setFadeLove] = useState(false);
+    fullMessage,
+    loveText = "I love you",
+    fadeAfter = 7000,
+  }: {
+    fullMessage: string;
+    loveText?: string;
+    fadeAfter?: number;
+  }) => {
+    const [displayed, setDisplayed] = useState("");
+    const [showLove, setShowLove] = useState(true);
 
-  useEffect(() => {
-    let index = 0;
-    let interval: number;
+    useEffect(() => {
+      let index = 0;
+      const interval = window.setInterval(() => {
+        setDisplayed((prev) => prev + fullMessage[index]);
+        index++;
+        if (index >= fullMessage.length) clearInterval(interval);
+      }, 40);
 
-    // Typewriter logic
-    interval = window.setInterval(() => {
-      setDisplayed((prev) => prev + text[index]);
-      index++;
-      if (index >= text.length) {
+      const timeout = window.setTimeout(() => {
+        setShowLove(false);
+      }, fadeAfter);
+
+      return () => {
         clearInterval(interval);
-      }
-    }, 40);
+        clearTimeout(timeout);
+      };
+    }, [fullMessage, fadeAfter]);
 
-    // Hide "I love you" after delay
-    const timeout: number = window.setTimeout(() => {
-      setDisplayed((prev) => prev.replace(loveText, ""));
-      setFadeLove(true);
-    }, hideAfter);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, [text, loveText, hideAfter]);
-
-  // Wrap the "I love you" separately in a span
-  const renderMessage = displayed.includes(loveText) ? (
-    <>
-      {displayed.replace(loveText, "")}
-      <span
-        className={`${
-          fadeLove ? "opacity-0 transition-opacity duration-700" : "opacity-100"
-        } text-purple-600`}
-      >
-        {loveText}
-      </span>
-    </>
-  ) : (
-    displayed
-  );
-
-  return (
-    <p className="text-2xl font-bold text-center text-black sm:text-purple-600">
-      {renderMessage}
-    </p>
-  );
-};
-
+    return (
+      <p className="text-2xl font-bold text-center sm:text-3xl">
+        {displayed.split(loveText)[0]}
+        {showLove && <span className="text-purple-600">{loveText}</span>}
+      </p>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-white p-4 sm:p-8 text-black">
@@ -256,15 +255,16 @@ function App() {
 
         {gameState === "playing" && (
           <div className="mb-4 flex justify-between items-center text-black">
-            <div className={`text-sm font-medium ${mistakes > 0 ? "animate-pulse text-red-600 font-bold" : ""}`}>
-              Mistakes remaining: {4 - mistakes}
-            </div>
+            <div className="text-sm font-medium">Mistakes remaining: {4 - mistakes}</div>
             {message && <div className="text-sm font-bold animate-pulse">{message}</div>}
           </div>
         )}
 
         {solved.map((category, index) => (
-          <div key={index} className={`${category.color} text-white p-4 rounded-lg mb-2 text-center`}>
+          <div
+            key={index}
+            className={`${category.color} text-white p-4 rounded-lg mb-2 text-center`}
+          >
             <div className="font-bold mb-1">{category.name}</div>
             <div className="text-sm">{category.words.join(", ")}</div>
           </div>
@@ -272,18 +272,20 @@ function App() {
 
         {gameState === "won" && (
           <div className="text-center mt-8">
-            <TypewriterMessage text="Congrats, you solved it! I love you... what? who typed that?" />
+            <TypewriterMessage fullMessage={message} fadeAfter={7000} />
           </div>
         )}
 
         {gameState === "playing" && (
           <>
+            {/* Word Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
               {words.map((word, index) => {
                 const isSolved = solved.some((cat) => cat.words.includes(word));
                 const isSelected = selected.includes(word);
                 if (isSolved) return null;
 
+                // Auto font size for longer words
                 const maxChars = 10;
                 const fontSize =
                   word.length > maxChars
@@ -298,7 +300,10 @@ function App() {
                     className={`
                       w-full aspect-square p-2 rounded-lg font-semibold text-center flex items-center justify-center
                       border-2 transition-transform transform hover:scale-105
-                      ${isSelected ? "bg-black text-white border-black" : "bg-white text-black border-gray-400 hover:border-black"}
+                      ${isSelected
+                        ? "bg-black text-white border-black"
+                        : "bg-white text-black border-gray-400 hover:border-black"
+                      }
                     `}
                   >
                     {word}
@@ -307,6 +312,7 @@ function App() {
               })}
             </div>
 
+            {/* Buttons */}
             <div className="flex gap-2 justify-center flex-wrap">
               <button
                 onClick={handleShuffle}
@@ -326,11 +332,12 @@ function App() {
               <button
                 onClick={handleSubmit}
                 disabled={selected.length !== 4}
-                className={`px-6 py-2 rounded-full font-semibold border-2 transition ${
-                  selected.length === 4
+                className={`px-6 py-2 rounded-full font-semibold border-2 transition
+                  ${selected.length === 4
                     ? "bg-black text-white border-black hover:bg-gray-900"
                     : "bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed"
-                }`}
+                  }
+                `}
               >
                 Submit
               </button>
