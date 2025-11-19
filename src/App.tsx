@@ -4,28 +4,28 @@ import { Shuffle } from 'lucide-react';
 function App() {
   const categories = {
     love: {
-      name: "THE ACTUAL LOVE OF MY LIFE",
+      name: "LITERAL LOVE OF MY LIFE",
       words: ["MADISON", "LOML", "ILYSM", "ROYGBABE"],
       color: "bg-purple-500",
       difficulty: "Hardest"
     },
     breakTime: {
-      name: "BREAK TIME",
+      name: "WHAT WE DO ON BREAK",
       words: ["CONNECTIONS", "COUCH", "IPAD", "LOUNGE"],
-      color: "bg-blue-500",
-      difficulty: "Hard"
+      color: "bg-yellow-500",
+      difficulty: "Easy"
     },
     nicknames: {
       name: "WHAT YOU CALL ME",
       words: ["PEDRO", "PRINCESS", "DIVA", "DL"],
-      color: "bg-green-500",
-      difficulty: "Medium"
+      color: "bg-blue-500",
+      difficulty: "Hard"
     },
     abbreviations: {
-      name: "TEXT ABBREVIATIONS",
+      name: "TEXTING ABBREVIATIONS",
       words: ["NGL", "LMAO", "WTF", "SMH"],
-      color: "bg-yellow-500",
-      difficulty: "Easy"
+      color: "bg-green-500",
+      difficulty: "Medium"
     }
   };
 
