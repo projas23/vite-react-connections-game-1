@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Stats Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 400px;
+      margin: 100px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .login-box h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .login-box button:hover {
+      background: #5568d3;
+    }
+
+    .error {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .stat-card h3 {
+      color: #666;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .stat-card .value {
+      font-size: 36px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .plays-table {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      overflow-x: auto;
+    }
+
+    .plays-table h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #666;
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .badge.won {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .badge.lost {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .loading {
+      text-align: center;
+      color: white;
+      font-size: 20px;
+      margin-top: 100px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .logout-btn {
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login" class="login-box">
+    <h2>🔒 Admin Login</h2>
+    <input type="password" id="secretInput" placeholder="Enter admin secret" />
+    <button onclick="login()">Access Dashboard</button>
+    <div id="loginError" class="error hidden"></div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="container hidden">
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <h1>📊 Connections Game Stats</h1>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Plays</h3>
+        <div class="value" id="totalPlays">-</div>
+      </div>
+      <div class="stat-card">
+        <h3>Wins</h3>
+        <div class="value" id="wins">-</div>
+      </div>
+      <div class="stat-card">
+        <h3>Losses</h3>
+        <div class="value" id="losses">-</div>
+      </div>
+      <div class="stat-card">
+        <h3>Win Rate</h3>
+        <div class="value" id="winRate">-</div>
+      </div>
+      <div class="stat-card">
+        <h3>Avg Mistakes</h3>
+        <div class="value" id="avgMistakes">-</div>
+      </div>
+      <div class="stat-card">
+        <h3>Avg Time</h3>
+        <div class="value" id="avgTime">-</div>
+      </div>
+    </div>
+
+    <div class="plays-table">
+      <h2>Recent Games</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date & Time</th>
+            <th>Result</th>
+            <th>Mistakes</th>
+            <th>Time</th>
+            <th>Categories Solved</th>
+          </tr>
+        </thead>
+        <tbody id="playsTableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">Loading...</div>
+
+  <script>
+    let adminSecret = null;
+
+    function login() {
+      const secret = document.getElementById('secretInput').value;
+      if (!secret) {
+        showError('Please enter a secret');
+        return;
+      }
+      
+      adminSecret = secret;
+      localStorage.setItem('adminSecret', secret);
+      loadDashboard();
+    }
+
+    function logout() {
+      adminSecret = null;
+      localStorage.removeItem('adminSecret');
+      document.getElementById('dashboard').classList.add('hidden');
+      document.getElementById('login').classList.remove('hidden');
+      document.getElementById('secretInput').value = '';
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById('loginError');
+      errorDiv.textContent = message;
+      errorDiv.classList.remove('hidden');
+    }
+
+    async function loadDashboard() {
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('login').classList.add('hidden');
+
+      try {
+        const response = await fetch(`/api/get-stats?secret=${adminSecret}`);
+        
+        if (!response.ok) {
+          if (response.status === 401) {
+            showError('Invalid secret key');
+            logout();
+            return;
+          }
+          throw new Error('Failed to load stats');
+        }
+
+        const stats = await response.json();
+        
+        // Update stat cards
+        document.getElementById('totalPlays').textContent = stats.totalPlays;
+        document.getElementById('wins').textContent = stats.wins;
+        document.getElementById('losses').textContent = stats.losses;
+        
+        const winRate = stats.totalPlays > 0 
+          ? ((stats.wins / stats.totalPlays) * 100).toFixed(0) + '%'
+          : '0%';
+        document.getElementById('winRate').textContent = winRate;
+        document.getElementById('avgMistakes').textContent = stats.avgMistakes;
+        document.getElementById('avgTime').textContent = formatTime(stats.avgTimeToComplete);
+
+        // Populate table
+        const tbody = document.getElementById('playsTableBody');
+        tbody.innerHTML = '';
+        
+        stats.plays.forEach(play => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${new Date(play.timestamp).toLocaleString()}</td>
+            <td><span class="badge ${play.result}">${play.result.toUpperCase()}</span></td>
+            <td>${play.mistakes || 0}</td>
+            <td>${formatTime(play.timeToComplete)}</td>
+            <td>${play.categoriesSolved ? play.categoriesSolved.map(c => c.name).join(', ') : 'N/A'}</td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+        showError('Failed to load dashboard. Check console.');
+        document.getElementById('loading').classList.add('hidden');
+        logout();
+      }
+    }
+
+    function formatTime(seconds) {
+      if (!seconds) return '0s';
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+    }
+
+    // Check if already logged in
+    window.onload = () => {
+      const savedSecret = localStorage.getItem('adminSecret');
+      if (savedSecret) {
+        adminSecret = savedSecret;
+        document.getElementById('login').classList.add('hidden');
+        loadDashboard();
+      } else {
+        document.getElementById('loading').classList.add('hidden');
+      }
+    };
+  </script>
+</body>
+</html>
