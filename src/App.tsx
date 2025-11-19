@@ -70,7 +70,6 @@ function App() {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
@@ -86,7 +85,7 @@ function App() {
         if (state.status === "won") {
           setSolved(Object.values(categories));
           setMessage(
-            "Congrats, you solved it! I love you... what? who typed that?"
+            "Congrats, you solved it! ... what? who typed that?"
           );
         }
       } else {
@@ -168,7 +167,7 @@ function App() {
       if (newSolved.length === 4) {
         setGameState("won");
         setMessage(
-          "Congrats, you solved it! I love you... what? who typed that?"
+          "Congrats, you solved it! ... what? who typed that?"
         );
         saveGameState("won");
       }
@@ -242,22 +241,26 @@ function App() {
 
         {gameState === "won" && (
           <div className="text-center mt-8">
-            <p className="text-2xl font-bold">
-              Congrats, you solved it! I love you... what? who typed that?
+            <p className="text-2xl font-bold text-purple-600">
+              Congrats, you solved it! ... what? who typed that?
             </p>
           </div>
         )}
 
         {gameState === "playing" && (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+            {/* Word Grid */}
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(70px,1fr))] gap-2 mb-6">
               {words.map((word, index) => {
                 const isSolved = solved.some((cat) => cat.words.includes(word));
                 const isSelected = selected.includes(word);
                 if (isSolved) return null;
 
+                const maxChars = 10;
                 const fontSize =
-                  word.length > 10 ? `${Math.max(12, 16 - (word.length - 10))}px` : "16px";
+                  word.length > maxChars
+                    ? `${Math.max(12, 16 - (word.length - maxChars))}px`
+                    : "16px";
 
                 return (
                   <button
@@ -279,6 +282,7 @@ function App() {
               })}
             </div>
 
+            {/* Buttons */}
             <div className="flex gap-2 justify-center flex-wrap">
               <button
                 onClick={handleShuffle}
