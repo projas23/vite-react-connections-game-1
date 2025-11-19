@@ -4,7 +4,7 @@ import { Shuffle } from "lucide-react";
 function App() {
   const categories = {
     love: {
-      name: "LITERAL LOVE OF MY LIFE",
+      name: "THE ACTUAL LOVE OF MY LIFE",
       words: ["MADISON", "LOML", "ILYSM", "ROYGBABE"],
       color: "bg-purple-500",
       difficulty: "Hardest",
@@ -85,7 +85,7 @@ function App() {
         if (state.status === "won") {
           setSolved(Object.values(categories));
           setMessage(
-            "Congrats, you solved it! ... I love you. What? who typed that?"
+            "Congrats, you solved it! ... I love you. What? Who typed that?"
           );
         }
       } else {
@@ -211,7 +211,7 @@ function App() {
             }}
             className="px-8 py-3 bg-black text-white rounded-full font-bold text-lg hover:bg-gray-800 transition-colors"
           >
-            All done, friend. Let's try again.
+            Ok, we're all done. Let's try again.
           </button>
         </div>
       </div>
@@ -250,7 +250,7 @@ function App() {
         {gameState === "won" && (
           <div className="text-center mt-8">
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-600 mb-6">
-              Congrats, you solved it! ... I love you. What? who typed that?
+              Congrats, you solved it! ... I love you. What? Who typed that?
             </p>
             <button
               onClick={async () => {
@@ -258,7 +258,7 @@ function App() {
               }}
               className="px-8 py-3 bg-purple-600 text-white rounded-full font-bold text-lg hover:bg-purple-700 transition-colors"
             >
-              All done, friend. Let's try again.
+              Ok, all done. Let's try again.
             </button>
           </div>
         )}
