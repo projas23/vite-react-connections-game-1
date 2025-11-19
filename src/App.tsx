@@ -1,47 +1,5 @@
-import { useState, useEffect } from "react";
-import { Shuffle } from "lucide-react";
-
-function TypewriterMessage({
-  fullMessage,
-  loveText = "I love you",
-  fadeAfter = 7000,
-}: {
-  fullMessage: string;
-  loveText?: string;
-  fadeAfter?: number;
-}) {
-  const [displayed, setDisplayed] = useState("");
-  const [showLove, setShowLove] = useState(false);
-
-  useEffect(() => {
-    let index = 0;
-
-    const interval = setInterval(() => {
-      setDisplayed((prev) => prev + fullMessage[index]);
-      index++;
-      if (index >= fullMessage.length) {
-        clearInterval(interval);
-        setShowLove(true); // show "I love you" after full message typed
-      }
-    }, 40);
-
-    const timeout = setTimeout(() => {
-      setShowLove(false); // hide "I love you" after delay
-    }, fullMessage.length * 40 + fadeAfter);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, [fullMessage, fadeAfter]);
-
-  return (
-    <p className="text-2xl font-bold text-center sm:text-3xl">
-      {displayed}
-      {showLove && <span className="text-purple-600"> {loveText}</span>}
-    </p>
-  );
-}
+import { useState, useEffect } from 'react';
+import { Shuffle } from 'lucide-react';
 
 function App() {
   const categories = {
@@ -49,29 +7,29 @@ function App() {
       name: "LITERAL LOVE OF MY LIFE",
       words: ["MADISON", "LOML", "ILYSM", "ROYGBABE"],
       color: "bg-purple-500",
-      difficulty: "Hardest",
+      difficulty: "Hardest"
     },
     breakTime: {
       name: "WHAT WE DO ON BREAK",
       words: ["CONNECTIONS", "COUCH", "IPAD", "LOUNGE"],
       color: "bg-yellow-500",
-      difficulty: "Easy",
+      difficulty: "Easy"
     },
     nicknames: {
       name: "WHAT YOU CALL ME",
       words: ["PEDRO", "PRINCESS", "DIVA", "DL"],
       color: "bg-blue-500",
-      difficulty: "Hard",
+      difficulty: "Hard"
     },
     abbreviations: {
       name: "TEXTING ABBREVIATIONS",
       words: ["NGL", "LMAO", "WTF", "SMH"],
       color: "bg-green-500",
-      difficulty: "Medium",
-    },
+      difficulty: "Medium"
+    }
   };
 
-  const allWords = Object.values(categories).flatMap((cat) => cat.words);
+  const allWords = Object.values(categories).flatMap(cat => cat.words);
 
   const [words, setWords] = useState(shuffleArray([...allWords]));
   const [selected, setSelected] = useState<string[]>([]);
@@ -127,9 +85,7 @@ function App() {
         setGameState(state.status);
         if (state.status === "won") {
           setSolved(Object.values(categories));
-          setMessage(
-            "Congrats, you solved it! ... what? who typed that?"
-          );
+          setMessage("Congrats, you solved it! I love you... what? who typed that?");
         }
       } else {
         setGameState("playing");
@@ -142,10 +98,7 @@ function App() {
 
   const saveGameState = (status: string) => {
     try {
-      localStorage.setItem(
-        "connections-game-state",
-        JSON.stringify({ status })
-      );
+      localStorage.setItem("connections-game-state", JSON.stringify({ status }));
     } catch {}
   };
 
@@ -163,10 +116,10 @@ function App() {
 
   const handleWordClick = (word: string) => {
     if (gameState !== "playing") return;
-    if (solved.some((cat) => cat.words.includes(word))) return;
+    if (solved.some(cat => cat.words.includes(word))) return;
 
     if (selected.includes(word)) {
-      setSelected(selected.filter((w) => w !== word));
+      setSelected(selected.filter(w => w !== word));
     } else if (selected.length < 4) {
       setSelected([...selected, word]);
     }
@@ -174,12 +127,8 @@ function App() {
 
   const handleShuffle = () => {
     if (gameState !== "playing") return;
-    const remaining = words.filter(
-      (w) => !solved.some((cat) => cat.words.includes(w))
-    );
-    const solvedWords = words.filter((w) =>
-      solved.some((cat) => cat.words.includes(w))
-    );
+    const remaining = words.filter(w => !solved.some(cat => cat.words.includes(w)));
+    const solvedWords = words.filter(w => solved.some(cat => cat.words.includes(w)));
     setWords([...solvedWords, ...shuffleArray(remaining)]);
   };
 
@@ -194,7 +143,7 @@ function App() {
     if (selected.length !== 4) return;
 
     const foundCategory = Object.entries(categories).find(([, cat]) =>
-      selected.every((word) => cat.words.includes(word))
+      selected.every(word => cat.words.includes(word))
     );
 
     if (foundCategory) {
@@ -204,19 +153,17 @@ function App() {
       setSelected([]);
       setMessage(`✨ ${category.name}! ✨`);
 
-      const remainingWords = words.filter((w) => !category.words.includes(w));
+      const remainingWords = words.filter(w => !category.words.includes(w));
       setWords([...category.words, ...remainingWords]);
 
       if (newSolved.length === 4) {
         setGameState("won");
-        setMessage(
-          "Congrats, you solved it! ... what? who typed that?"
-        );
+        setMessage("Congrats, you solved it! I love you... what? who typed that?");
         saveGameState("won");
       }
     } else {
-      const oneAway = Object.values(categories).some((cat) => {
-        const matches = selected.filter((word) => cat.words.includes(word));
+      const oneAway = Object.values(categories).some(cat => {
+        const matches = selected.filter(word => cat.words.includes(word));
         return matches.length === 3;
       });
 
@@ -258,13 +205,14 @@ function App() {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold mb-1">Connections</h1>
+          <p className="text-gray-600 italic"></p>
           <p className="text-sm text-gray-500 mt-1">Create four groups of four!</p>
         </div>
 
         {gameState === "playing" && (
           <div className="mb-4 flex justify-between items-center text-black">
             <div className="text-sm font-medium">
-              Mistakes remaining: {Math.max(0, 4 - mistakes)}
+              Mistakes remaining: {4 - mistakes}
             </div>
             {message && (
               <div className="text-sm font-bold animate-pulse">{message}</div>
@@ -273,10 +221,7 @@ function App() {
         )}
 
         {solved.map((category, index) => (
-          <div
-            key={index}
-            className={`${category.color} text-white p-4 rounded-lg mb-2 text-center`}
-          >
+          <div key={index} className={`${category.color} text-white p-4 rounded-lg mb-2 text-center`}>
             <div className="font-bold mb-1">{category.name}</div>
             <div className="text-sm">{category.words.join(", ")}</div>
           </div>
@@ -284,47 +229,44 @@ function App() {
 
         {gameState === "won" && (
           <div className="text-center mt-8">
-            <TypewriterMessage
-              fullMessage="Congrats, you solved it! ... what? who typed that?"
-              fadeAfter={7000}
-            />
+            <p className="text-2xl font-bold animate-pulse">{message}</p>
           </div>
         )}
 
         {gameState === "playing" && (
           <>
-            <div className="grid grid-cols-4 gap-2 mb-6 sm:grid-cols-4 xs:grid-cols-2">
-              {words.map((word, index) => {
-                const isSolved = solved.some((cat) => cat.words.includes(word));
-                const isSelected = selected.includes(word);
-                if (isSolved) return null;
+            {/* Word Grid */}
+           <div className="grid grid-cols-4 gap-2 mb-6 sm:grid-cols-4 xs:grid-cols-2">
+  {words.map((word, index) => {
+    const isSolved = solved.some(cat => cat.words.includes(word));
+    const isSelected = selected.includes(word);
+    if (isSolved) return null;
 
-                const maxChars = 10;
-                const fontSize =
-                  word.length > maxChars
-                    ? `${Math.max(12, 16 - (word.length - maxChars))}px`
-                    : "16px";
+    // Auto-fit font size: smaller for longer words
+    const maxChars = 10; // approximate chars that fit without shrinking
+    const fontSize = word.length > maxChars ? `${Math.max(12, 16 - (word.length - maxChars))}px` : '16px';
 
-                return (
-                  <button
-                    key={index}
-                    onClick={() => handleWordClick(word)}
-                    style={{ fontSize, lineHeight: 1.1 }}
-                    className={`
-                      w-full aspect-square p-2 rounded-lg font-semibold text-center flex items-center justify-center
-                      border-2 transition-transform transform hover:scale-105
-                      ${isSelected
-                        ? "bg-black text-white border-black"
-                        : "bg-white text-black border-gray-400 hover:border-black"
-                      }
-                    `}
-                  >
-                    {word}
-                  </button>
-                );
-              })}
-            </div>
+    return (
+      <button
+        key={index}
+        onClick={() => handleWordClick(word)}
+        style={{ fontSize, lineHeight: 1.1 }}
+        className={`
+          w-full aspect-square p-2 rounded-lg font-semibold text-center flex items-center justify-center
+          border-2 transition-transform transform hover:scale-105
+          ${isSelected
+            ? "bg-black text-white border-black"
+            : "bg-white text-black border-gray-400 hover:border-black"
+          }
+        `}
+      >
+        {word}
+      </button>
+    );
+  })}
+</div>
 
+            {/* Buttons */}
             <div className="flex gap-2 justify-center flex-wrap">
               <button
                 onClick={handleShuffle}
@@ -357,6 +299,10 @@ function App() {
             </div>
           </>
         )}
+
+        <div className="mt-8 text-center text-xs text-gray-500">
+          <p></p>
+        </div>
       </div>
     </div>
   );
