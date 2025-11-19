@@ -256,11 +256,10 @@ function App() {
                 const isSelected = selected.includes(word);
                 if (isSolved) return null;
 
-                const maxChars = 10;
-                const fontSize =
-                  word.length > maxChars
-                    ? `${Math.max(12, 16 - (word.length - maxChars))}px`
-                    : "16px";
+             const maxChars = 8;
+const fontSize = word.length > maxChars 
+  ? `${Math.max(10, 16 - (word.length - maxChars) * 0.8)}px`
+  : "14px";
 
                 return (
                   <button
