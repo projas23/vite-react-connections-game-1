@@ -1,6 +1,48 @@
 import { useState, useEffect } from "react";
 import { Shuffle } from "lucide-react";
 
+function TypewriterMessage({
+  fullMessage,
+  loveText = "I love you",
+  fadeAfter = 7000,
+}: {
+  fullMessage: string;
+  loveText?: string;
+  fadeAfter?: number;
+}) {
+  const [displayed, setDisplayed] = useState("");
+  const [showLove, setShowLove] = useState(false);
+
+  useEffect(() => {
+    let index = 0;
+
+    const interval = setInterval(() => {
+      setDisplayed((prev) => prev + fullMessage[index]);
+      index++;
+      if (index >= fullMessage.length) {
+        clearInterval(interval);
+        setShowLove(true); // show "I love you" after full message typed
+      }
+    }, 40);
+
+    const timeout = setTimeout(() => {
+      setShowLove(false); // hide "I love you" after delay
+    }, fullMessage.length * 40 + fadeAfter);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [fullMessage, fadeAfter]);
+
+  return (
+    <p className="text-2xl font-bold text-center sm:text-3xl">
+      {displayed}
+      {showLove && <span className="text-purple-600"> {loveText}</span>}
+    </p>
+  );
+}
+
 function App() {
   const categories = {
     love: {
@@ -86,7 +128,7 @@ function App() {
         if (state.status === "won") {
           setSolved(Object.values(categories));
           setMessage(
-            "Congrats, you solved it! I love you... what? who typed that?"
+            "Congrats, you solved it! ... what? who typed that?"
           );
         }
       } else {
@@ -100,7 +142,10 @@ function App() {
 
   const saveGameState = (status: string) => {
     try {
-      localStorage.setItem("connections-game-state", JSON.stringify({ status }));
+      localStorage.setItem(
+        "connections-game-state",
+        JSON.stringify({ status })
+      );
     } catch {}
   };
 
@@ -132,7 +177,9 @@ function App() {
     const remaining = words.filter(
       (w) => !solved.some((cat) => cat.words.includes(w))
     );
-    const solvedWords = words.filter((w) => solved.some((cat) => cat.words.includes(w)));
+    const solvedWords = words.filter((w) =>
+      solved.some((cat) => cat.words.includes(w))
+    );
     setWords([...solvedWords, ...shuffleArray(remaining)]);
   };
 
@@ -163,7 +210,7 @@ function App() {
       if (newSolved.length === 4) {
         setGameState("won");
         setMessage(
-          "Congrats, you solved it! I love you... what? who typed that?"
+          "Congrats, you solved it! ... what? who typed that?"
         );
         saveGameState("won");
       }
@@ -173,7 +220,7 @@ function App() {
         return matches.length === 3;
       });
 
-      const newMistakes = Math.min(mistakes + 1, 4);
+      const newMistakes = mistakes + 1;
       setMistakes(newMistakes);
 
       if (newMistakes >= 4) {
@@ -206,45 +253,6 @@ function App() {
     );
   }
 
-  // --- TYPEWRITER COMPONENT ---
-  const TypewriterMessage = ({
-    fullMessage,
-    loveText = "I love you",
-    fadeAfter = 7000,
-  }: {
-    fullMessage: string;
-    loveText?: string;
-    fadeAfter?: number;
-  }) => {
-    const [displayed, setDisplayed] = useState("");
-    const [showLove, setShowLove] = useState(true);
-
-    useEffect(() => {
-      let index = 0;
-      const interval = window.setInterval(() => {
-        setDisplayed((prev) => prev + fullMessage[index]);
-        index++;
-        if (index >= fullMessage.length) clearInterval(interval);
-      }, 40);
-
-      const timeout = window.setTimeout(() => {
-        setShowLove(false);
-      }, fadeAfter);
-
-      return () => {
-        clearInterval(interval);
-        clearTimeout(timeout);
-      };
-    }, [fullMessage, fadeAfter]);
-
-    return (
-      <p className="text-2xl font-bold text-center sm:text-3xl">
-        {displayed.split(loveText)[0]}
-        {showLove && <span className="text-purple-600">{loveText}</span>}
-      </p>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-white p-4 sm:p-8 text-black">
       <div className="max-w-2xl mx-auto">
@@ -255,8 +263,12 @@ function App() {
 
         {gameState === "playing" && (
           <div className="mb-4 flex justify-between items-center text-black">
-            <div className="text-sm font-medium">Mistakes remaining: {4 - mistakes}</div>
-            {message && <div className="text-sm font-bold animate-pulse">{message}</div>}
+            <div className="text-sm font-medium">
+              Mistakes remaining: {Math.max(0, 4 - mistakes)}
+            </div>
+            {message && (
+              <div className="text-sm font-bold animate-pulse">{message}</div>
+            )}
           </div>
         )}
 
@@ -272,20 +284,21 @@ function App() {
 
         {gameState === "won" && (
           <div className="text-center mt-8">
-            <TypewriterMessage fullMessage={message} fadeAfter={7000} />
+            <TypewriterMessage
+              fullMessage="Congrats, you solved it! ... what? who typed that?"
+              fadeAfter={7000}
+            />
           </div>
         )}
 
         {gameState === "playing" && (
           <>
-            {/* Word Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+            <div className="grid grid-cols-4 gap-2 mb-6 sm:grid-cols-4 xs:grid-cols-2">
               {words.map((word, index) => {
                 const isSolved = solved.some((cat) => cat.words.includes(word));
                 const isSelected = selected.includes(word);
                 if (isSolved) return null;
 
-                // Auto font size for longer words
                 const maxChars = 10;
                 const fontSize =
                   word.length > maxChars
@@ -312,7 +325,6 @@ function App() {
               })}
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-2 justify-center flex-wrap">
               <button
                 onClick={handleShuffle}
@@ -333,9 +345,10 @@ function App() {
                 onClick={handleSubmit}
                 disabled={selected.length !== 4}
                 className={`px-6 py-2 rounded-full font-semibold border-2 transition
-                  ${selected.length === 4
-                    ? "bg-black text-white border-black hover:bg-gray-900"
-                    : "bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed"
+                  ${
+                    selected.length === 4
+                      ? "bg-black text-white border-black hover:bg-gray-900"
+                      : "bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed"
                   }
                 `}
               >
