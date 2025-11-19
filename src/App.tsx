@@ -85,7 +85,7 @@ function App() {
         setGameState(state.status);
         if (state.status === "won") {
           setSolved(Object.values(categories));
-          setMessage("🎉 Congrats, you solved it! I love you... what? who typed that? 🎉");
+          setMessage("Congrats, you solved it! I love you... what? who typed that?");
         }
       } else {
         setGameState("playing");
@@ -158,7 +158,7 @@ function App() {
 
       if (newSolved.length === 4) {
         setGameState("won");
-        setMessage("🎉 Congrats, you solved it! I love you... what? who typed that? 🎉");
+        setMessage("Congrats, you solved it! I love you... what? who typed that?");
         saveGameState("won");
       }
     } else {
@@ -205,7 +205,7 @@ function App() {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold mb-1">Connections</h1>
-          <p className="text-gray-600 italic">A game made just for you 💜✨</p>
+          <p className="text-gray-600 italic"></p>
           <p className="text-sm text-gray-500 mt-1">Create four groups of four!</p>
         </div>
 
@@ -301,7 +301,7 @@ function App() {
         )}
 
         <div className="mt-8 text-center text-xs text-gray-500">
-          <p>Made with love for the ACTUAL LOML 💜</p>
+          <p></p>
         </div>
       </div>
     </div>
