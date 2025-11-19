@@ -202,8 +202,8 @@ function App() {
       <div className="min-h-screen bg-gray-100 dark:bg-gray-100 flex items-center justify-center p-8 text-black dark:text-black">
         <div className="max-w-md text-center">
           <div className="text-6xl mb-6">😔</div>
-          <h1 className="text-3xl font-bold mb-4">Is it too hard?</h1>
-          <p className="text-xl mb-2">No, you got this.</p>
+          <h1 className="text-3xl font-bold mb-4">Oh no, you didn't win this time.</h1>
+          <p className="text-xl mb-2">But you got this.</p>
           <p className="text-lg text-gray-600 dark:text-gray-600 mb-6"></p>
           <button
             onClick={async () => {
