@@ -4,7 +4,7 @@ import { Shuffle } from "lucide-react";
 function App() {
   const categories = {
     love: {
-      name: "LITERAL LOVE OF MY LIFE",
+      name: "THE ACTUAL LOVE OF MY LIFE",
       words: ["MADISON", "LOML", "ILYSM", "ROYGBABE"],
       color: "bg-purple-500",
       difficulty: "Hardest",
@@ -180,7 +180,7 @@ function App() {
       const newMistakes = mistakes + 1;
       setMistakes(newMistakes);
 
-      if (newMistakes >= 5) {
+      if (newMistakes >= 4) {
         setGameState("lost");
         saveGameState("lost");
       } else {
@@ -214,14 +214,14 @@ function App() {
     <div className="min-h-screen bg-white dark:bg-white px-0 py-2 sm:p-8 text-black dark:text-black">
       <div className="w-full sm:max-w-2xl sm:mx-auto">
         <div className="text-center mb-2 sm:mb-6">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-0.5 sm:mb-1">TEST Connections</h1>
+          <h1 className="text-2xl sm:text-4xl font-bold mb-0.5 sm:mb-1">Connections</h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500 mt-0.5 sm:mt-1">Create four groups of four!</p>
         </div>
 
         {gameState === "playing" && (
           <div className="mb-2 sm:mb-4 flex justify-between items-center text-black dark:text-black text-xs sm:text-sm">
             <div className="mb-2 sm:mb-4 text-sm font-medium">
-              Mistakes remaining: {Math.max(0, 5 - mistakes)}
+              Mistakes remaining: {Math.max(0, 4 - mistakes)}
             </div>
             {message && (
               <div className="text-xs sm:text-sm font-bold animate-pulse">{message}</div>
