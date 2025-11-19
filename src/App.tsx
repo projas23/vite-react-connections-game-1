@@ -85,7 +85,7 @@ function App() {
         if (state.status === "won") {
           setSolved(Object.values(categories));
           setMessage(
-            "Congrats, you solved it! ... I love you. What? who typed that?"
+            "Congrats, you solved it! ... I love you. What? Who typed that?"
           );
         }
       } else {
