@@ -244,22 +244,19 @@ function App() {
 
                 return (
                   <button
-                    key={index}
-                    onClick={() => handleWordClick(word)}
-                    className={`
-                      p-2 sm:p-4 rounded-lg font-semibold leading-tight whitespace-normal break-words
-                      min-h-[56px] flex items-center justify-center text-center
-                      text-[3.5vw] sm:text-sm
-                      border-2 transition-all transform hover:scale-105
-                      ${
-                        isSelected
-                          ? "bg-gray-800 text-white border-black"
-                          : "bg-white text-black border-gray-400 hover:border-black"
-                      }
-                    `}
-                  >
-                    {word}
-                  </button>
+  key={index}
+  onClick={() => handleWordClick(word)}
+  className={`
+    p-4 rounded-lg font-semibold text-sm transition-all transform hover:scale-105
+    ${isSelected
+      ? "bg-purple-400 text-white shadow-lg"
+      : "bg-white text-gray-800 border-2 border-gray-200 hover:border-purple-300"
+    }
+  `}
+>
+  {word}
+</button>
+
                 );
               })}
             </div>
