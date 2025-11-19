@@ -145,47 +145,47 @@ function App() {
     setMessage("");
   };
 
-  const handleSubmit = () => {
-    if (gameState !== 'playing') return;
-    if (selected.length !== 4) return;
+const handleSubmit = () => {
+  if (gameState !== 'playing') return;
+  if (selected.length !== 4) return;
 
-    const foundCategory = Object.entries(categories).find(([key, cat]) => {
-      return selected.every(word => cat.words.includes(word)) && 
-             selected.length === 4;
+  const foundCategory = Object.entries(categories).find(([, cat]) => {
+    return selected.every(word => cat.words.includes(word)) && 
+           selected.length === 4;
+  });
+
+  if (foundCategory) {
+    const [, category] = foundCategory;
+    const newSolved = [...solved, category];
+    setSolved(newSolved);
+    setSelected([]);
+    setMessage(`✨ ${category.name}! ✨`);
+    
+    const remainingWords = words.filter(w => !category.words.includes(w));
+    setWords([...category.words, ...remainingWords]);
+
+    if (newSolved.length === 4) {
+      setGameState('won');
+      setMessage("🎉 Congrats, you solved it! I love you... what? who typed that? 🎉");
+      saveGameState('won');
+    }
+  } else {
+    const oneAway = Object.values(categories).some(cat => {
+      const matches = selected.filter(word => cat.words.includes(word));
+      return matches.length === 3;
     });
 
-    if (foundCategory) {
-      const [key, category] = foundCategory;
-      const newSolved = [...solved, category];
-      setSolved(newSolved);
-      setSelected([]);
-      setMessage(`✨ ${category.name}! ✨`);
-      
-      const remainingWords = words.filter(w => !category.words.includes(w));
-      setWords([...category.words, ...remainingWords]);
-
-      if (newSolved.length === 4) {
-        setGameState('won');
-        setMessage("🎉 Congrats, you solved it! I love you... what? who typed that? 🎉");
-        saveGameState('won');
-      }
+    const newMistakes = mistakes + 1;
+    setMistakes(newMistakes);
+    
+    if (newMistakes >= 4) {
+      setGameState('lost');
+      saveGameState('lost');
     } else {
-      const oneAway = Object.values(categories).some(cat => {
-        const matches = selected.filter(word => cat.words.includes(word));
-        return matches.length === 3;
-      });
-
-      const newMistakes = mistakes + 1;
-      setMistakes(newMistakes);
-      
-      if (newMistakes >= 4) {
-        setGameState('lost');
-        saveGameState('lost');
-      } else {
-        setMessage(oneAway ? "One away! 🤏" : "Not quite! Try again 💜");
-      }
+      setMessage(oneAway ? "One away! 🤏" : "Not quite! Try again 💜");
     }
-  };
+  }
+};
 
   if (isLoading) {
     return (
