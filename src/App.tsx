@@ -185,56 +185,66 @@ function App() {
   };
 
   // Typewriter component for win message
-  const TypewriterMessage = ({ text, loveText = "I love you", hideAfter = 7000 }: { text: string; loveText?: string; hideAfter?: number }) => {
-    const [displayed, setDisplayed] = useState("");
-    const [fadeLove, setFadeLove] = useState(false);
+  const TypewriterMessage = ({
+  text,
+  loveText = "I love you",
+  hideAfter = 7000,
+}: {
+  text: string;
+  loveText?: string;
+  hideAfter?: number;
+}) => {
+  const [displayed, setDisplayed] = useState("");
+  const [fadeLove, setFadeLove] = useState(false);
 
-    useEffect(() => {
-      let index = 0;
-      const interval = setInterval(() => {
-        setDisplayed((prev) => prev + text[index]);
-        index++;
-        if (index >= text.length) clearInterval(interval);
-      }, 40);
+  useEffect(() => {
+    let index = 0;
+    let interval: number;
 
-      const timeout: number = window.setTimeout(() => {
-        setDisplayed((prev) => prev.replace(loveText, ""));
-        setFadeLove(true);
-      }, hideAfter);
-
-      return () => {
+    // Typewriter logic
+    interval = window.setInterval(() => {
+      setDisplayed((prev) => prev + text[index]);
+      index++;
+      if (index >= text.length) {
         clearInterval(interval);
-        clearTimeout(timeout);
-      };
-    }, [text, loveText, hideAfter]);
+      }
+    }, 40);
 
-    return (
-      <p className={`text-2xl font-bold ${fadeLove ? "text-gray-400 transition-all duration-700" : "text-purple-600"}`}>
-        {displayed}
-      </p>
-    );
-  };
+    // Hide "I love you" after delay
+    const timeout: number = window.setTimeout(() => {
+      setDisplayed((prev) => prev.replace(loveText, ""));
+      setFadeLove(true);
+    }, hideAfter);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-black text-xl font-semibold">Loading...</div>
-      </div>
-    );
-  }
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [text, loveText, hideAfter]);
 
-  if (gameState === "lost") {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8 text-black">
-        <div className="max-w-md text-center">
-          <div className="text-6xl mb-6">😔</div>
-          <h1 className="text-3xl font-bold mb-4">Thank you for playing, friend.</h1>
-          <p className="text-xl mb-2">We're all done.</p>
-          <p className="text-lg text-gray-600">Better luck next time.</p>
-        </div>
-      </div>
-    );
-  }
+  // Wrap the "I love you" separately in a span
+  const renderMessage = displayed.includes(loveText) ? (
+    <>
+      {displayed.replace(loveText, "")}
+      <span
+        className={`${
+          fadeLove ? "opacity-0 transition-opacity duration-700" : "opacity-100"
+        } text-purple-600`}
+      >
+        {loveText}
+      </span>
+    </>
+  ) : (
+    displayed
+  );
+
+  return (
+    <p className="text-2xl font-bold text-center text-black sm:text-purple-600">
+      {renderMessage}
+    </p>
+  );
+};
+
 
   return (
     <div className="min-h-screen bg-white p-4 sm:p-8 text-black">
