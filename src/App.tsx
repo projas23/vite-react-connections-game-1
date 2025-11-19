@@ -85,7 +85,7 @@ function App() {
         if (state.status === "won") {
           setSolved(Object.values(categories));
           setMessage(
-            "Congrats, you solved it! ... what? who typed that?"
+            "Congrats, you solved it! ... I love you. What? who typed that?"
           );
         }
       } else {
@@ -242,7 +242,7 @@ function App() {
         {gameState === "won" && (
           <div className="text-center mt-8">
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-600">
-              Congrats, you solved it! ... what? who typed that?
+              Congrats, you solved it! ... I love you. What? who typed that?
             </p>
           </div>
         )}
