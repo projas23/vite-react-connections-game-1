@@ -38,6 +38,7 @@ function App() {
   const [message, setMessage] = useState("");
   const [gameState, setGameState] = useState("loading");
   const [isLoading, setIsLoading] = useState(true);
+  const [startTime, setStartTime] = useState<number | null>(null);
 
   function shuffleArray(array: string[]) {
     const newArray = [...array];
@@ -90,9 +91,11 @@ function App() {
         }
       } else {
         setGameState("playing");
+        setStartTime(Date.now());
       }
     } catch {
       setGameState("playing");
+      setStartTime(Date.now());
     }
     setIsLoading(false);
   };
@@ -106,6 +109,28 @@ function App() {
     } catch {}
   };
 
+  const saveGameStats = async (result: string) => {
+    try {
+      const timeToComplete = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+      
+      await fetch('/api/save-game', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          result,
+          mistakes,
+          timeToComplete,
+          categoriesSolved: solved.map((cat, index) => ({
+            name: cat.name,
+            order: index + 1
+          }))
+        })
+      });
+    } catch (error) {
+      console.error('Failed to save stats:', error);
+    }
+  };
+
   const resetGameCompletely = () => {
     try {
       localStorage.removeItem("connections-game-state");
@@ -115,6 +140,7 @@ function App() {
       setMistakes(0);
       setMessage("");
       setGameState("playing");
+      setStartTime(Date.now());
     } catch {}
   };
 
@@ -146,7 +172,7 @@ function App() {
     setMessage("");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (gameState !== "playing") return;
     if (selected.length !== 4) return;
 
@@ -167,9 +193,10 @@ function App() {
       if (newSolved.length === 4) {
         setGameState("won");
         setMessage(
-          "Congrats, you solved it! ... what? who typed that?"
+          "Congrats, you solved it! ... I love you. What? Who typed that?"
         );
         saveGameState("won");
+        await saveGameStats("won");
       }
     } else {
       const oneAway = Object.values(categories).some((cat) => {
@@ -183,6 +210,7 @@ function App() {
       if (newMistakes >= 4) {
         setGameState("lost");
         saveGameState("lost");
+        await saveGameStats("lost");
       } else {
         setMessage(oneAway ? "One away! 🤏" : "Not quite! Try again 💜");
       }
@@ -203,8 +231,7 @@ function App() {
         <div className="max-w-md text-center">
           <div className="text-6xl mb-6">😔</div>
           <h1 className="text-3xl font-bold mb-4">Oh no, you didn't win this time.</h1>
-          <p className="text-xl mb-2">But you got this.</p>
-          <p className="text-lg text-gray-600 dark:text-gray-600 mb-6"></p>
+          <p className="text-xl mb-6">But you got this.</p>
           <button
             onClick={async () => {
               await resetGameCompletely();
