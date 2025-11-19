@@ -23,7 +23,7 @@ function App() {
     },
     abbreviations: {
       name: "TEXT ABBREVIATIONS",
-      words: ["SMH", "LMAO", "WTF", "SMH"],
+      words: ["NGL", "LMAO", "WTF", "SMH"],
       color: "bg-yellow-500",
       difficulty: "Easy"
     }
