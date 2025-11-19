@@ -4,28 +4,28 @@ import { Shuffle } from 'lucide-react';
 function App() {
   const categories = {
     love: {
-      name: "LITERAL LOVE OF MY LIFE",
+      name: "THE ACTUAL LOVE OF MY LIFE",
       words: ["MADISON", "LOML", "ILYSM", "ROYGBABE"],
       color: "bg-purple-500",
       difficulty: "Hardest"
     },
     breakTime: {
-      name: "WHAT WE DO ON BREAK",
+      name: "BREAK TIME",
       words: ["CONNECTIONS", "COUCH", "IPAD", "LOUNGE"],
-      color: "bg-yellow-500",
-      difficulty: "Easy"
+      color: "bg-blue-500",
+      difficulty: "Hard"
     },
     nicknames: {
       name: "WHAT YOU CALL ME",
       words: ["PEDRO", "PRINCESS", "DIVA", "DL"],
-      color: "bg-blue-500",
-      difficulty: "Hard"
-    },
-    abbreviations: {
-      name: "TEXTING ABBREVIATIONS",
-      words: ["NGL", "LMAO", "WTF", "SMH"],
       color: "bg-green-500",
       difficulty: "Medium"
+    },
+    abbreviations: {
+      name: "TEXT ABBREVIATIONS",
+      words: ["NGL", "LMAO", "WTF", "SMH"],
+      color: "bg-yellow-500",
+      difficulty: "Easy"
     }
   };
 
@@ -85,7 +85,7 @@ function App() {
         setGameState(state.status);
         if (state.status === "won") {
           setSolved(Object.values(categories));
-          setMessage("Congrats, you solved it! I love you... what? who typed that?");
+          setMessage("🎉 Congrats, you solved it! I love you... what? who typed that? 🎉");
         }
       } else {
         setGameState("playing");
@@ -158,7 +158,7 @@ function App() {
 
       if (newSolved.length === 4) {
         setGameState("won");
-        setMessage("Congrats, you solved it! I love you... what? who typed that?");
+        setMessage("🎉 Congrats, you solved it! I love you... what? who typed that? 🎉");
         saveGameState("won");
       }
     } else {
@@ -205,7 +205,7 @@ function App() {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold mb-1">Connections</h1>
-          <p className="text-gray-600 italic"></p>
+          <p className="text-gray-600 italic">A game made just for you 💜✨</p>
           <p className="text-sm text-gray-500 mt-1">Create four groups of four!</p>
         </div>
 
@@ -236,7 +236,7 @@ function App() {
         {gameState === "playing" && (
           <>
             {/* Word Grid */}
-           <div className="grid grid-cols-4 gap-2 mb-6 sm:grid-cols-4 xs:grid-cols-2">
+            <div className="grid grid-cols-4 gap-2 mb-6 sm:grid-cols-4 xs:grid-cols-2">
   {words.map((word, index) => {
     const isSolved = solved.some(cat => cat.words.includes(word));
     const isSelected = selected.includes(word);
@@ -265,6 +265,7 @@ function App() {
     );
   })}
 </div>
+
 
             {/* Buttons */}
             <div className="flex gap-2 justify-center flex-wrap">
@@ -301,7 +302,7 @@ function App() {
         )}
 
         <div className="mt-8 text-center text-xs text-gray-500">
-          <p></p>
+          <p>Made with love for the ACTUAL LOML 💜</p>
         </div>
       </div>
     </div>
