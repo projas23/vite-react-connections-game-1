@@ -4,7 +4,7 @@ import { Shuffle } from "lucide-react";
 function App() {
   const categories = {
     love: {
-      name: "THE ACTUAL LOVE OF MY LIFE",
+      name: "LITERAL LOVE OF MY LIFE",
       words: ["MADISON", "LOML", "ILYSM", "ROYGBABE"],
       color: "bg-purple-500",
       difficulty: "Hardest",
@@ -85,7 +85,7 @@ function App() {
         if (state.status === "won") {
           setSolved(Object.values(categories));
           setMessage(
-            "Congrats, you solved it! ... I love you. What? Who typed that?"
+            "Congrats, you solved it! ... I love you. What? who typed that?"
           );
         }
       } else {
@@ -204,7 +204,15 @@ function App() {
           <div className="text-6xl mb-6">😔</div>
           <h1 className="text-3xl font-bold mb-4">Thank you for playing, friend.</h1>
           <p className="text-xl mb-2">We're all done.</p>
-          <p className="text-lg text-gray-600 dark:text-gray-600">Better luck next time.</p>
+          <p className="text-lg text-gray-600 dark:text-gray-600 mb-6">Better luck next time.</p>
+          <button
+            onClick={async () => {
+              await resetGameCompletely();
+            }}
+            className="px-8 py-3 bg-black text-white rounded-full font-bold text-lg hover:bg-gray-800 transition-colors"
+          >
+            All done, friend. Let's try again.
+          </button>
         </div>
       </div>
     );
@@ -241,9 +249,17 @@ function App() {
 
         {gameState === "won" && (
           <div className="text-center mt-8">
-            <p className="text-2xl font-bold text-purple-600 dark:text-purple-600">
+            <p className="text-2xl font-bold text-purple-600 dark:text-purple-600 mb-6">
               Congrats, you solved it! ... I love you. What? who typed that?
             </p>
+            <button
+              onClick={async () => {
+                await resetGameCompletely();
+              }}
+              className="px-8 py-3 bg-purple-600 text-white rounded-full font-bold text-lg hover:bg-purple-700 transition-colors"
+            >
+              All done, friend. Let's try again.
+            </button>
           </div>
         )}
 
