@@ -180,7 +180,7 @@ function App() {
       const newMistakes = mistakes + 1;
       setMistakes(newMistakes);
 
-      if (newMistakes >= 4) {
+      if (newMistakes >= 5) {
         setGameState("lost");
         saveGameState("lost");
       } else {
@@ -221,7 +221,7 @@ function App() {
         {gameState === "playing" && (
           <div className="mb-4 flex justify-between items-center text-black dark:text-black">
             <div className="text-sm font-medium">
-              Mistakes remaining: {Math.max(0, 4 - mistakes)}
+              Mistakes remaining: {Math.max(0, 5 - mistakes)}
             </div>
             {message && (
               <div className="text-sm font-bold animate-pulse">{message}</div>
