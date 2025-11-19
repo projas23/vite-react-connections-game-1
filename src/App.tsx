@@ -172,22 +172,22 @@ function App() {
         return matches.length === 3;
       });
 
-      const newMistakes = mistakes + 1;
+      const newMistakes = Math.min(mistakes + 1, 4); // clamp at 4
       setMistakes(newMistakes);
-      setMessage(oneAway ? "One away! 🤏" : "Not quite! Try again 💜");
+
+      if (newMistakes >= 4) {
+        setGameState("lost");
+        saveGameState("lost");
+      } else {
+        setMessage(oneAway ? "One away! 🤏" : "Not quite! Try again 💜");
+      }
     }
   };
 
   // Typewriter component for win message
-  const TypewriterMessage = ({
-    text,
-    hideAfter = 3000,
-  }: {
-    text: string;
-    hideAfter?: number;
-  }) => {
+  const TypewriterMessage = ({ text, loveText = "I love you", hideAfter = 7000 }: { text: string; loveText?: string; hideAfter?: number }) => {
     const [displayed, setDisplayed] = useState("");
-    const [fade, setFade] = useState(false);
+    const [fadeLove, setFadeLove] = useState(false);
 
     useEffect(() => {
       let index = 0;
@@ -197,24 +197,19 @@ function App() {
         if (index >= text.length) clearInterval(interval);
       }, 40);
 
-      // Fade out the "I love you" part after 3s
-      const fadeTimeout: number = window.setTimeout(() => {
-        setDisplayed((prev) => prev.replace("I love you", ""));
-        setFade(true);
+      const timeout: number = window.setTimeout(() => {
+        setDisplayed((prev) => prev.replace(loveText, ""));
+        setFadeLove(true);
       }, hideAfter);
 
       return () => {
         clearInterval(interval);
-        clearTimeout(fadeTimeout);
+        clearTimeout(timeout);
       };
-    }, [text, hideAfter]);
+    }, [text, loveText, hideAfter]);
 
     return (
-      <p
-        className={`text-2xl font-bold ${
-          fade ? "text-gray-400 transition-all duration-700" : "text-purple-600"
-        }`}
-      >
+      <p className={`text-2xl font-bold ${fadeLove ? "text-gray-400 transition-all duration-700" : "text-purple-600"}`}>
         {displayed}
       </p>
     );
@@ -251,11 +246,7 @@ function App() {
 
         {gameState === "playing" && (
           <div className="mb-4 flex justify-between items-center text-black">
-            <div
-              className={`text-sm font-medium ${
-                mistakes > 0 ? "animate-pulse text-red-600 font-bold" : ""
-              }`}
-            >
+            <div className={`text-sm font-medium ${mistakes > 0 ? "animate-pulse text-red-600 font-bold" : ""}`}>
               Mistakes remaining: {4 - mistakes}
             </div>
             {message && <div className="text-sm font-bold animate-pulse">{message}</div>}
@@ -263,10 +254,7 @@ function App() {
         )}
 
         {solved.map((category, index) => (
-          <div
-            key={index}
-            className={`${category.color} text-white p-4 rounded-lg mb-2 text-center`}
-          >
+          <div key={index} className={`${category.color} text-white p-4 rounded-lg mb-2 text-center`}>
             <div className="font-bold mb-1">{category.name}</div>
             <div className="text-sm">{category.words.join(", ")}</div>
           </div>
@@ -300,10 +288,7 @@ function App() {
                     className={`
                       w-full aspect-square p-2 rounded-lg font-semibold text-center flex items-center justify-center
                       border-2 transition-transform transform hover:scale-105
-                      ${isSelected
-                        ? "bg-black text-white border-black"
-                        : "bg-white text-black border-gray-400 hover:border-black"
-                      }
+                      ${isSelected ? "bg-black text-white border-black" : "bg-white text-black border-gray-400 hover:border-black"}
                     `}
                   >
                     {word}
@@ -331,13 +316,11 @@ function App() {
               <button
                 onClick={handleSubmit}
                 disabled={selected.length !== 4}
-                className={`px-6 py-2 rounded-full font-semibold border-2 transition
-                  ${
-                    selected.length === 4
-                      ? "bg-black text-white border-black hover:bg-gray-900"
-                      : "bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed"
-                  }
-                `}
+                className={`px-6 py-2 rounded-full font-semibold border-2 transition ${
+                  selected.length === 4
+                    ? "bg-black text-white border-black hover:bg-gray-900"
+                    : "bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed"
+                }`}
               >
                 Submit
               </button>
