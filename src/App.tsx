@@ -235,18 +235,16 @@ function App() {
 
         {gameState === "playing" && (
           <>
-            {/* Word Grid */}
-<div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+           {/* Word Grid */}
+<div className="grid gap-2 mb-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(70px, 1fr))' }}>
   {words.map((word, index) => {
     const isSolved = solved.some(cat => cat.words.includes(word));
     const isSelected = selected.includes(word);
     if (isSolved) return null;
 
-    // Dynamic font sizing based on word length
-    const calcSize = Math.floor(
-      Math.max(12, Math.min(16, 200 / Math.max(6, word.length)))
-    );
-    const fontStyle = { fontSize: `${calcSize}px`, lineHeight: 1.05 };
+    // Dynamic font size to fit long words
+    const fontSize = Math.max(12, Math.min(16, 120 / word.length));
+    const fontStyle = { fontSize: `${fontSize}px`, lineHeight: 1.1 };
 
     return (
       <button
@@ -254,9 +252,8 @@ function App() {
         onClick={() => handleWordClick(word)}
         style={fontStyle}
         className={`
-          w-full min-w-0 p-3 rounded-lg font-semibold leading-tight whitespace-normal break-words
-          flex items-center justify-center text-center border-2
-          transition-transform transform hover:scale-105
+          w-full p-2 rounded-lg font-semibold text-center flex items-center justify-center
+          border-2 transition-transform transform hover:scale-105
           ${isSelected
             ? "bg-black text-white border-black"
             : "bg-white text-black border-gray-400 hover:border-black"
@@ -268,6 +265,7 @@ function App() {
     );
   })}
 </div>
+
 
 
             {/* Buttons */}
