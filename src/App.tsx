@@ -17,13 +17,13 @@ function App() {
     },
     nicknames: {
       name: "WHAT YOU CALL ME",
-      words: ["GORGEOUS", "PRINCESS", "DIVA", "DL"],
+      words: ["PEDRO", "PRINCESS", "DIVA", "DL"],
       color: "bg-green-500",
       difficulty: "Medium"
     },
     abbreviations: {
       name: "TEXT ABBREVIATIONS",
-      words: ["TM", "LMAO", "WTF", "BRO"],
+      words: ["SMH", "LMAO", "WTF", "SMH"],
       color: "bg-yellow-500",
       difficulty: "Easy"
     }
