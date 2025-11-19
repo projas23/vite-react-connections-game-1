@@ -211,7 +211,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-white px-1 py-2 sm:p-8 text-black dark:text-black">
+    <div className="min-h-screen bg-white dark:bg-white px-0 py-2 sm:p-8 text-black dark:text-black">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-4 sm:mb-6">
           <h1 className="text-3xl sm:text-4xl font-bold mb-1">Connections</h1>
