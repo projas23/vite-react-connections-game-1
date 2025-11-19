@@ -257,10 +257,9 @@ function App() {
           w-full min-w-0 p-3 rounded-lg font-semibold leading-tight whitespace-normal break-words
           flex items-center justify-center text-center border-2
           transition-transform transform hover:scale-105
-          ${
-            isSelected
-              ? "bg-black text-white border-black"
-              : "bg-white text-black border-gray-400 hover:border-black"
+          ${isSelected
+            ? "bg-black text-white border-black"
+            : "bg-white text-black border-gray-400 hover:border-black"
           }
         `}
       >
@@ -269,6 +268,7 @@ function App() {
     );
   })}
 </div>
+
 
             {/* Buttons */}
             <div className="flex gap-2 justify-center flex-wrap">
