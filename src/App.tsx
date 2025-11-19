@@ -212,7 +212,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-white px-0 py-2 sm:p-8 text-black dark:text-black">
-      <div className="max-w-2xl mx-auto">
+      <div className="w-full sm:max-w-2xl sm:mx-auto">
         <div className="text-center mb-2 sm:mb-6">
           <h1 className="text-2xl sm:text-4xl font-bold mb-0.5 sm:mb-1">Connections</h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500 mt-0.5 sm:mt-1">Create four groups of four!</p>
