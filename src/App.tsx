@@ -235,38 +235,39 @@ function App() {
 
         {gameState === "playing" && (
           <>
-           {/* Word Grid */}
-<div className="grid gap-2 mb-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(70px, 1fr))' }}>
-  {words.map((word, index) => {
-    const isSolved = solved.some(cat => cat.words.includes(word));
-    const isSelected = selected.includes(word);
-    if (isSolved) return null;
+            {/* Word Grid */}
+            <div
+              className="grid gap-2 mb-6"
+              style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(70px, 1fr))' }}
+            >
+              {words.map((word, index) => {
+                const isSolved = solved.some(cat => cat.words.includes(word));
+                const isSelected = selected.includes(word);
+                if (isSolved) return null;
 
-    // Dynamic font size to fit long words
-    const fontSize = Math.max(12, Math.min(16, 120 / word.length));
-    const fontStyle = { fontSize: `${fontSize}px`, lineHeight: 1.1 };
+                // Dynamic font size to fit long words
+                const fontSize = Math.max(12, Math.min(16, 120 / word.length));
+                const fontStyle = { fontSize: `${fontSize}px`, lineHeight: 1.1 };
 
-    return (
-      <button
-        key={index}
-        onClick={() => handleWordClick(word)}
-        style={fontStyle}
-        className={`
-          w-full p-2 rounded-lg font-semibold text-center flex items-center justify-center
-          border-2 transition-transform transform hover:scale-105
-          ${isSelected
-            ? "bg-black text-white border-black"
-            : "bg-white text-black border-gray-400 hover:border-black"
-          }
-        `}
-      >
-        {word}
-      </button>
-    );
-  })}
-</div>
-
-
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleWordClick(word)}
+                    style={fontStyle}
+                    className={`
+                      w-full aspect-square p-2 rounded-lg font-semibold text-center flex items-center justify-center
+                      border-2 transition-transform transform hover:scale-105
+                      ${isSelected
+                        ? "bg-black text-white border-black"
+                        : "bg-white text-black border-gray-400 hover:border-black"
+                      }
+                    `}
+                  >
+                    {word}
+                  </button>
+                );
+              })}
+            </div>
 
             {/* Buttons */}
             <div className="flex gap-2 justify-center flex-wrap">
