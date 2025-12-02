@@ -3,27 +3,27 @@ import { Shuffle } from "lucide-react";
 
 function App() {
   const categories = {
-    love: {
-      name: "THE ACTUAL LOVE OF MY LIFE",
-      words: ["MADISON", "LOML", "ILYSM", "ROYGBABE"],
+    tech: {
+      name: "PROGRAMMING LANGUAGES",
+      words: ["PYTHON", "JAVA", "RUBY", "SWIFT"],
       color: "bg-purple-500",
-      difficulty: "Hardest",
+      difficulty: "Hard",
     },
-    breakTime: {
-      name: "WHAT WE DO ON BREAK",
-      words: ["CONNECTIONS", "COUCH", "IPAD", "LOUNGE"],
+    fruits: {
+      name: "TYPES OF FRUIT",
+      words: ["APPLE", "BANANA", "ORANGE", "GRAPE"],
       color: "bg-yellow-500",
       difficulty: "Easy",
     },
-    nicknames: {
-      name: "WHAT YOU CALL ME",
-      words: ["PEDRO", "PRINCESS", "DIVA", "DL"],
+    cities: {
+      name: "US CITIES",
+      words: ["CHICAGO", "DALLAS", "PHOENIX", "AUSTIN"],
       color: "bg-blue-500",
-      difficulty: "Hard",
+      difficulty: "Medium",
     },
-    abbreviations: {
-      name: "TEXTING ABBREVIATIONS",
-      words: ["NGL", "LMAO", "WTF", "SMH"],
+    colors: {
+      name: "SHADES OF BLUE",
+      words: ["NAVY", "CYAN", "TEAL", "AZURE"],
       color: "bg-green-500",
       difficulty: "Medium",
     },
@@ -60,6 +60,7 @@ function App() {
         keysPressed.has("r") &&
         keysPressed.has("e") &&
         keysPressed.has("s") &&
+        keysPressed.has("e") &&
         keysPressed.has("t")
       ) {
         resetGameCompletely();
@@ -85,9 +86,7 @@ function App() {
         setGameState(state.status);
         if (state.status === "won") {
           setSolved(Object.values(categories));
-          setMessage(
-            "Congrats, you solved it! ... I love you. What? Who typed that?"
-          );
+          setMessage("🎉 Congratulations! You solved the puzzle!");
         }
       } else {
         setGameState("playing");
@@ -192,9 +191,7 @@ function App() {
 
       if (newSolved.length === 4) {
         setGameState("won");
-        setMessage(
-          "Congrats, you solved it! ... I love you. What? Who typed that?"
-        );
+        setMessage("🎉 Congratulations! You solved the puzzle!");
         saveGameState("won");
         await saveGameStats("won");
       }
@@ -230,15 +227,15 @@ function App() {
       <div className="min-h-screen bg-gray-100 dark:bg-gray-100 flex items-center justify-center p-8 text-black dark:text-black">
         <div className="max-w-md text-center">
           <div className="text-6xl mb-6">😔</div>
-          <h1 className="text-3xl font-bold mb-4">Oh no, you didn't win this time.</h1>
-          <p className="text-xl mb-6">But you got this.</p>
+          <h1 className="text-3xl font-bold mb-4">Game Over</h1>
+          <p className="text-xl mb-6">Better luck next time!</p>
           <button
             onClick={async () => {
               await resetGameCompletely();
             }}
             className="px-8 py-3 bg-black text-white rounded-full font-bold text-lg hover:bg-gray-800 transition-colors"
           >
-            Let's try again.
+            Play Again
           </button>
         </div>
       </div>
@@ -246,20 +243,20 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-white px-0 py-2 sm:p-8 text-black dark:text-black">
-      <div className="w-full sm:max-w-2xl sm:mx-auto">
-        <div className="text-center mb-2 sm:mb-6">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-0.5 sm:mb-1">Connections</h1>
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500 mt-0.5 sm:mt-1">Create four groups of four!</p>
+    <div className="min-h-screen bg-white dark:bg-white px-4 py-8 sm:p-8 text-black dark:text-black">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-2">Connections</h1>
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-500">Create four groups of four!</p>
         </div>
 
         {gameState === "playing" && (
-          <div className="mb-2 sm:mb-4 flex justify-between items-center text-black dark:text-black text-xs sm:text-sm">
-            <div className="mb-2 sm:mb-4 text-sm font-medium">
+          <div className="mb-6 flex justify-between items-center text-black dark:text-black">
+            <div className="text-sm sm:text-base font-medium">
               Mistakes remaining: {Math.max(0, 4 - mistakes)}
             </div>
             {message && (
-              <div className="text-xs sm:text-sm font-bold animate-pulse">{message}</div>
+              <div className="text-sm sm:text-base font-bold animate-pulse">{message}</div>
             )}
           </div>
         )}
@@ -277,7 +274,7 @@ function App() {
         {gameState === "won" && (
           <div className="text-center mt-8">
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-600 mb-6">
-              Congrats, you solved it! ... I love you. What? Who typed that?
+              🎉 Congratulations! You solved the puzzle!
             </p>
             <button
               onClick={async () => {
@@ -285,14 +282,14 @@ function App() {
               }}
               className="px-8 py-3 bg-purple-600 text-white rounded-full font-bold text-lg hover:bg-purple-700 transition-colors"
             >
-              Ok, all done. Let's try again.
+              Play Again
             </button>
           </div>
         )}
 
         {gameState === "playing" && (
           <>
-            <div className="grid grid-cols-4 gap-2 mb-6">
+            <div className="grid grid-cols-4 gap-2 mb-6 max-w-2xl mx-auto">
               {words.map((word, index) => {
                 const isSolved = solved.some((cat) => cat.words.includes(word));
                 const isSelected = selected.includes(word);
@@ -303,16 +300,16 @@ function App() {
                     key={index}
                     onClick={() => handleWordClick(word)}
                     className={`
-                      w-full aspect-square p-1.5 rounded-lg font-semibold text-center flex items-center justify-center
-                      border-2 transition-transform transform hover:scale-105 leading-tight
-                      ${word.length > 10 ? 'text-[10px]' : word.length > 8 ? 'text-xs' : word.length > 6 ? 'text-sm' : 'text-base'}
+                      w-full aspect-square p-2 rounded-lg font-semibold text-center flex items-center justify-center
+                      border-2 transition-all transform hover:scale-105
+                      ${word.length > 7 ? 'text-xs' : word.length > 5 ? 'text-sm' : 'text-base'}
                       ${isSelected
                         ? "bg-black text-white border-black dark:bg-black dark:text-white dark:border-black"
                         : "bg-white text-black border-gray-400 hover:border-black dark:bg-white dark:text-black dark:border-gray-400 dark:hover:border-black"
                       }
                     `}
                   >
-                    <span className="px-0.5 break-words w-full">{word}</span>
+                    {word}
                   </button>
                 );
               })}
